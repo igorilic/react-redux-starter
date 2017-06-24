@@ -1,11 +1,9 @@
 import webpack from 'webpack';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-
+/* eslint-disable */
 export default {
-  debug: true,
   devtool: 'inline-source-map',
-  noInfo: false,
   entry: [
     'webpack-hot-middleware/client?reload=true',
     path.resolve(__dirname, 'src/index')
@@ -16,21 +14,28 @@ export default {
     publicPath: '/',
     filename: 'bundle.js'
   },
-  // devServer: {
-  //   contentBase: path.resolve(__dirname, 'src')
-  // },
   plugins: [
+    new webpack.LoaderOptionsPlugin({
+       debug: true
+     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       inject: true
     })
   ],
   module: {
-    loaders: [
-      {test: /\.js$/, exclude: /node_modules/, loaders: ['babel']},
-      {test: /\.scss$/, loaders: ['style', 'css', 'sass']}
+    rules: [
+      {test: /\.js$/, exclude: /node_modules/, loaders: ['babel-loader']},
+      {
+        test: /\.scss$/,
+        use: [
+          {loader: "style-loader"},
+          {loader: "css-loader", options: {modules:true}},
+          {loader: "sass-loader"}
+        ]
+      }
     ]
   }
   
